@@ -14,15 +14,16 @@ def is_duplicate_email(email_embedding,email_body, threshold=0.9):
     query_results = index.query(vector=email_embedding, top_k=1, include_metadata=True)
 
     if query_results["matches"] and query_results["matches"][0]["score"] > 0.85:  # Confidence threshold
+        id = query_results["matches"][0]["id"]
         duplicate_metadata = query_results["matches"][0]["metadata"]
         request_type = duplicate_metadata.get("request_type", "Unknown")
         sub_request_type = duplicate_metadata.get("sub_request_type", "Unknown")
         entities = duplicate_metadata.get("entities", {})
         confidence_score = duplicate_metadata.get("confidence_score", 0.0)
 
-        return True, request_type, sub_request_type,entities, confidence_score  # Returning multiple values
+        return True, request_type, sub_request_type,entities, confidence_score, "The request already exists with ID - "+id  # Returning multiple values
 
-    return False, None, None, None, None  # No duplicate found
+    return False, None, None, None, None, "New Request"  # No duplicate found
 
 
 def insert_vector(email_embedding, email_body, request_type, sub_request_type, entities, confidence_score):

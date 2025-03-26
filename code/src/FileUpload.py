@@ -41,14 +41,14 @@ class EmailProcessorApp:
         self.output_label = ttk.Label(root, text="Output:", font=("Arial", 12))
         self.output_label.pack(pady=10)
 
-        self.view_json_button = ttk.Button(root, text="View JSON", command=self.view_json, state=DISABLED)
-        self.view_json_button.pack(pady=5)
+        # self.view_json_button = ttk.Button(root, text="View JSON", command=self.view_json, state=DISABLED)
+        # self.view_json_button.pack(pady=5)
 
         self.table_frame = ttk.Frame(root)
         self.table_frame.pack(pady=10, fill=X)
 
     def browse_files(self):
-        file_types = [("PDF files", "*.pdf"), ("Email files", "*.eml"), ("Text files", "*.txt")]
+        file_types = [("Email files", "*.eml"), ("PDF files", "*.pdf"), ("Text files", "*.txt")]
         selected_files = filedialog.askopenfilenames(filetypes=file_types)
         if selected_files:
             self.files.extend(selected_files)
@@ -61,9 +61,6 @@ class EmailProcessorApp:
         self.file_display.config(state=DISABLED)  # Disable text widget after clearing
         self.files.clear()  # Clear stored file list
         self.processed_data = []  # Clear any extracted data
-
-        # Disable View JSON button as well
-        self.view_json_button.config(state=DISABLED)
 
         # Force UI refresh
         self.file_display.update_idletasks()
@@ -89,7 +86,7 @@ class EmailProcessorApp:
             email_embeddings = get_email_embeddings(email_body)
 
             # Check for duplicates
-            is_duplicate, request, sub_request, entities, confidence_score = is_duplicate_email(email_embeddings, email_body)
+            is_duplicate, request, sub_request, entities, confidence_score, comment = is_duplicate_email(email_embeddings, email_body)
             print(type(request))
             if is_duplicate:
                 processed_data.append({
@@ -97,11 +94,13 @@ class EmailProcessorApp:
                     "Sub-Request Type": sub_request,
                     "Extracted Fields": entities,
                     "Duplicate": True,
-                    "Confidence Score": confidence_score
+                    "Confidence Score": confidence_score,
+                    "Comment": comment
                 })
             else:
                 # Classify request type and extract entities
                 request = classify_request(email_body)
+                # print(request)
                 entities = extract_entities(email_body)
 
                 # Store in Pinecone
@@ -112,14 +111,15 @@ class EmailProcessorApp:
                     "Sub-Request Type": request["sub_request_type"],
                     "Extracted Fields": entities,
                     "Duplicate": False,
-                    "Confidence Score": request["confidence_score"]
+                    "Confidence Score": request["confidence_score"],
+                    "Comment": "New Request"
                 })
             
 
         self.processed_data = processed_data
         # Clear the file list
         
-        self.view_json_button.config(state=NORMAL)
+        # self.view_json_button.config(state=NORMAL)
         self.display_table()
         self.clear_selection()
 
@@ -161,7 +161,7 @@ class EmailProcessorApp:
             widget.destroy()
 
         # Corrected Table Headers
-        headers = ["Request Type", "Sub Request Type", "Extracted Fields", "Confidence Score", "Duplicate"]
+        headers = ["Request Type", "Sub Request Type", "Extracted Fields", "Confidence Score", "Duplicate", "Comment"]
         
         for col, header in enumerate(headers):
             header_label = ttk.Label(self.table_frame, text=header, font=("Arial", 10, "bold"), anchor="center")
@@ -169,15 +169,16 @@ class EmailProcessorApp:
 
         # Populate table rows
         for row, data in enumerate(self.processed_data, start=1):
-            ttk.Label(self.table_frame, text=data["Request Type"], anchor="center").grid(row=row, column=0, padx=10, pady=5, sticky="nsew")
-            ttk.Label(self.table_frame, text=data["Sub-Request Type"], anchor="center").grid(row=row, column=1, padx=10, pady=5, sticky="nsew")
+            ttk.Label(self.table_frame, text=data["Request Type"], anchor="center").grid(row=row, column=0, padx=7.5, pady=5, sticky="nsew")
+            ttk.Label(self.table_frame, text=data["Sub-Request Type"], anchor="center").grid(row=row, column=1, padx=7.5, pady=5, sticky="nsew")
 
             # Add "View JSON" button in Extracted Fields column
             extracted_fields_button = Button(self.table_frame, text="View Extracted Data", command=lambda d=json.loads(data["Extracted Fields"]): self.show_json_popup(d))
-            extracted_fields_button.grid(row=row, column=2, padx=10, pady=5)
+            extracted_fields_button.grid(row=row, column=2, padx=7.5, pady=5)
 
-            ttk.Label(self.table_frame, text=str(data["Confidence Score"]), anchor="center").grid(row=row, column=3, padx=10, pady=5, sticky="nsew")
-            ttk.Label(self.table_frame, text=str(data["Duplicate"]), anchor="center").grid(row=row, column=4, padx=10, pady=5, sticky="nsew")
+            ttk.Label(self.table_frame, text=str(data["Confidence Score"]), anchor="center").grid(row=row, column=3, padx=7.5, pady=5, sticky="nsew")
+            ttk.Label(self.table_frame, text=str(data["Duplicate"]), anchor="center").grid(row=row, column=4, padx=7.5, pady=5, sticky="nsew")
+            ttk.Label(self.table_frame, text=str(data["Comment"]), anchor="center").grid(row=row, column=5, padx=7.5, pady=5, sticky="nsew")
 
         # Make the columns expand evenly
         for i in range(len(headers)):

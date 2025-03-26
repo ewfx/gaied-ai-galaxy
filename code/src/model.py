@@ -1,3 +1,4 @@
+import re
 import pdfplumber
 import docx
 import email
@@ -18,8 +19,10 @@ client = MistralClient(api_key=MISTRAL_API_KEY)
 
 # Request type definitions
 REQUEST_TYPES = {
-    "Adjustment": ["Reallocation Fees", "Amendment Fees", "Reallocation Principal"],
-    "Closing Notice": ["Cashless Roll", "Decrease", "Increase"],
+    "Adjustment": [],
+    "AU Transfer": [],
+    "Closing Notice": ["Reallocation Fees", "Amendment Fees", "Reallocation Principal"],
+    "Commitment Change": ["Cashless Roll", "Decrease", "Increase"],
     "Fee Payment": ["Ongoing Fee", "Letter of Credit Fee"],
     "Money Movement - Inbound": ["Principal", "Interest", "Principal + Interest", "Principal + Interest + Fee"],
     "Money Movement - Outbound": ["Timebound", "Foreign Currency"],
@@ -49,7 +52,9 @@ def extract_emailBody_attachments(eml_path, save_dir="attachments/"):
                     f.write(part.get_payload(decode=True))
                 attachments.append(filepath)
 
+    # print(process_attachment(att) for att in attachments)
     extracted_text = body.strip() + "\n" + "\n".join([process_attachment(att) for att in attachments])
+
     return extracted_text
 
 def process_attachment(file_path):
@@ -83,9 +88,17 @@ def classify_request(text):
     Available request types and subtypes:
     {json.dumps(REQUEST_TYPES, indent=2)}
 
+    
+
     Return output as JSON with "request_type" and "sub_request_type". If unsure, return 'Unknown'. 
-    Also, provide a confidence score between 0 to 1. Classify it as Others if confidence score is less than 0.85. 
-    If there are multiple requests detected, return all the valid request types and their sub request types.
+    Also, provide a confidence score between 0 to 1. Classify it request_type as Others and sub_request_type as Unknown if confidence score is less than 0.85. 
+    If there are multiple requests detected, return all the valid request types and their sub request types. set the confidence score as confidence_score.
+    **Return JSON Format Only (No extra text or explanations):**
+    {{
+        "request_type": "Category Name",
+        "sub_request_type": "Subcategory Name",
+        "confidence_score": Confidence Value (0 to 1)
+    }}
     """
 
     messages = [
@@ -94,8 +107,9 @@ def classify_request(text):
     ]
 
     response = client.chat(model="mistral-small", messages=messages, temperature=0)
-    print(response)
-    return json.loads(response.choices[0].message.content)
+    # print(response)
+    match = re.search(r"\{.*\}", response.choices[0].message.content, re.DOTALL)
+    return  json.loads(match.group())
 
 def extract_entities(text):
     """Extracts entities dynamically using Mistral AI."""
