@@ -4,7 +4,7 @@ import numpy as np
 import uuid
 from pinecone import Pinecone
 
-pc = Pinecone(api_key="pcsk_3ziyDH_JSmCMTueh48ortZAq5karCuqrZn9JqosTdveLyXrNyX8QaK4aA6vBqJxckcsnPU")
+pc = Pinecone(api_key="")
 index = pc.Index("email-embedding")
 
 def is_duplicate_email(email_embedding,email_body, threshold=0.9):
