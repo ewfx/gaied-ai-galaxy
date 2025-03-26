@@ -1,7 +1,7 @@
 
 
 
-# 🚀 Project Name
+# 🚀 AI Powered Email and Document Triaging/Routing
 
 ## 📌 Table of Contents
 - [Introduction](#introduction)
