@@ -17,7 +17,8 @@
 ---
 
 ## 🎯 Introduction
-A brief overview of your project and its purpose. Mention which problem statement are your attempting to solve. Keep it concise and engaging.
+This project automates email classification and entity extraction for loan servicing requests. It processes incoming emails, classifies them into predefined request types, extracts key details, and detects duplicate requests using Pinecone vector embeddings.
+
 
 ## 🎥 Demo
 🔗 [Live Demo](#) (if applicable)  
@@ -27,37 +28,53 @@ A brief overview of your project and its purpose. Mention which problem statemen
 ![Screenshot 1](link-to-image)
 
 ## 💡 Inspiration
-What inspired you to create this project? Describe the problem you're solving.
+Manual email processing in loan servicing leads to delays, errors, and inefficiencies. This project automates request classification and extracts structured data to improve response time and accuracy.
+
 
 ## ⚙️ What It Does
-Explain the key features and functionalities of your project.
+- Processes emails (.eml, .pdf, .doc, etc.)
+- Classifies request types & sub-types (e.g., Money Movement, Closing Notice, Adjustments, etc.)
+- Extracts key details (e.g., Loan ID, Amount, Expiry Date, etc.)
+- Detects duplicate requests using Pinecone
+- Displays results in an interactive UI
+
 
 ## 🛠️ How We Built It
-Briefly outline the technologies, frameworks, and tools used in development.
+🔹 LLM-based Classification: Mistral AI for intent detection  
+🔹 Entity Extraction: Mistral API for extracting structured details  
+🔹 Vector Embeddings: SentenceTransformers for creating and storing vevtor embeddings  
+🔹 Duplicate Detection: Pinecone vector DB for similarity search  
+🔹 Frontend UI: Tkinter-based Python desktop app  
 
 ## 🚧 Challenges We Faced
-Describe the major technical or non-technical challenges your team encountered.
+🔸 LLM Misclassifications: Adjusting prompt engineering for better request type identification  
+🔸 Handling Attachments: Extracting data from PDF, DOC, XLSX files inside emails  
+🔸 Embedding Mismatch: Ensuring vector dimensions match in Pinecone  
+🔸 Duplicate Detection: Fine-tuning similarity thresholds for accurate matches  
+🔸 Rate Limiters on free APIs  
 
 ## 🏃 How to Run
 1. Clone the repository  
    ```sh
-   git clone https://github.com/your-repo.git
+   git clone https://github.com/ewfx/gaied-ai-galaxy
    ```
 2. Install dependencies  
-   ```sh
-   npm install  # or pip install -r requirements.txt (for Python)
+   ```s
+   pip install -r requirements.txt
    ```
 3. Run the project  
    ```sh
-   npm start  # or python app.py
+   python FileUpload.py
    ```
 
 ## 🏗️ Tech Stack
-- 🔹 Frontend: React / Vue / Angular
-- 🔹 Backend: Node.js / FastAPI / Django
-- 🔹 Database: PostgreSQL / Firebase
-- 🔹 Other: OpenAI API / Twilio / Stripe
+🔹 LLM: Mistral AI  
+🔹 Embeddings: SentenceTransformers / Pinecone  
+🔹 UI: Tkinter (Python)  
+🔹 Database: Pinecone (Vector DB)  
+🔹 Backend: Python   
 
 ## 👥 Team
-- **Your Name** - [GitHub](#) | [LinkedIn](#)
-- **Teammate 2** - [GitHub](#) | [LinkedIn](#)
+- **Yugandhar Konduri** - [GitHub](#) | [LinkedIn](#)
+- **Appari Shanti** - [GitHub](#) | [LinkedIn](#)
+- **Prabhakar Hechina** - [GitHub](#) | [LinkedIn](#)
