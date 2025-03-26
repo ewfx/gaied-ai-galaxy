@@ -14,7 +14,7 @@ from detect_duplicate import insert_vector, is_duplicate_email
 
 
 # Initialize Mistral API
-MISTRAL_API_KEY = "ZHDjSh1yp0SuGEbfW5amfm6zHLj7xjTx"
+MISTRAL_API_KEY = ""
 client = MistralClient(api_key=MISTRAL_API_KEY)
 
 # Request type definitions
