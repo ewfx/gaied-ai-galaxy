@@ -23,9 +23,8 @@ This project automates email classification and entity extraction for loan servi
 ## 🎥 Demo
 🔗 [Live Demo](#) (if applicable)  
 📹 [Video Demo](#) (if applicable)  
-🖼️ Screenshots:
-
-![Screenshot 1](link-to-image)
+🖼️ PPT:
+(https://github.com/ewfx/gaied-ai-galaxy/blob/main/Technology%20Hackathon%202025.pptx)
 
 ## 💡 Inspiration
 Manual email processing in loan servicing leads to delays, errors, and inefficiencies. This project automates request classification and extracts structured data to improve response time and accuracy.
